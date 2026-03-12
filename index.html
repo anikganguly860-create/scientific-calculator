@@ -1,117 +1,84 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Advanced Scientific Calculator</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ultra Advanced Scientific Calculator</title>
 
+<!-- Chart.js for graphs -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
 
 <style>
-
 body{
-font-family:Arial;
-display:flex;
-justify-content:center;
-align-items:center;
-height:100vh;
-background:#0f172a;
-color:white;
-transition:0.3s;
+  margin:0;
+  font-family:Arial, sans-serif;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  transition:0.3s;
 }
-
-.light{
-background:#f1f5f9;
-color:black;
-}
+.dark{background:#0f172a;color:white;}
+.light{background:#f1f5f9;color:black;}
 
 .calculator{
-background:#1e293b;
-padding:20px;
-border-radius:15px;
-width:360px;
-box-shadow:0 0 20px black;
+  width:380px;
+  padding:20px;
+  border-radius:15px;
+  box-shadow:0 0 30px rgba(0,0,0,0.5);
+  transition:0.2s;
 }
-
-.light .calculator{
-background:white;
-}
-
 #clock{
-text-align:center;
-color:#38bdf8;
-margin-bottom:10px;
+  text-align:center;
+  margin-bottom:10px;
+  font-weight:bold;
+  color:#38bdf8;
+  font-size:18px;
 }
-
 #display{
-width:100%;
-height:55px;
-font-size:22px;
-border:none;
-border-radius:10px;
-padding:10px;
-margin-bottom:10px;
-text-align:right;
-background:#020617;
-color:white;
+  width:100%;
+  height:60px;
+  font-size:24px;
+  text-align:right;
+  border:none;
+  border-radius:10px;
+  padding:10px;
+  margin-bottom:10px;
+  background:#020617;
+  color:#22c55e;
+  box-shadow:inset 0 0 10px black;
+  transition:0.2s;
 }
-
-.light #display{
-background:#e2e8f0;
-color:black;
-}
-
 .buttons{
-display:grid;
-grid-template-columns:repeat(5,1fr);
-gap:8px;
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:6px;
 }
-
 button{
-padding:12px;
-font-size:14px;
-border:none;
-border-radius:8px;
-background:#334155;
-color:white;
+  padding:12px;
+  font-size:16px;
+  border:none;
+  border-radius:8px;
+  background:#334155;
+  color:white;
+  transition:0.15s;
+  cursor:pointer;
 }
-
-button:hover{
-background:#475569;
-}
-
+button:hover{transform:scale(1.05); background:#475569;}
+button:active{transform:scale(0.9);}
 .equal{background:#22c55e;}
 .clear{background:#ef4444;}
-.graph{background:#6366f1;}
-.theme{background:#f59e0b;}
-
-.history{
-margin-top:10px;
-max-height:120px;
-overflow:auto;
-background:#020617;
-padding:10px;
-border-radius:10px;
-font-size:13px;
-}
-
-.light .history{
-background:#e2e8f0;
-}
-
-#graphPanel{
-display:none;
-margin-top:10px;
-}
-
-canvas{
-background:white;
-border-radius:10px;
-}
-
+.graphBtn{background:#6366f1;}
+.themeBtn{background:#f59e0b;}
+.currencyBtn{background:#10b981;}
+#graphBox{display:none;margin-top:10px;}
+#currencyBox{display:none;margin-top:10px;}
+canvas{border-radius:10px;}
 </style>
-</head>
 
-<body>
+</head>
+<body class="dark">
 
 <div class="calculator">
 
@@ -125,158 +92,136 @@ border-radius:10px;
 <button onclick="insert('8')">8</button>
 <button onclick="insert('9')">9</button>
 <button onclick="insert('/')">÷</button>
-<button class="clear" onclick="clearDisplay()">C</button>
+<button onclick="insert('x')">x</button>
 
 <button onclick="insert('4')">4</button>
 <button onclick="insert('5')">5</button>
 <button onclick="insert('6')">6</button>
 <button onclick="insert('*')">×</button>
-<button onclick="insert('Math.sqrt(')">√</button>
+<button onclick="insert('(')">(</button>
 
 <button onclick="insert('1')">1</button>
 <button onclick="insert('2')">2</button>
 <button onclick="insert('3')">3</button>
 <button onclick="insert('-')">-</button>
-<button onclick="insert('Math.pow(')">xʸ</button>
+<button onclick="insert(')')">)</button>
 
 <button onclick="insert('0')">0</button>
 <button onclick="insert('.')">.</button>
-<button class="equal" onclick="calculate()">=</button>
+<button onclick="calculate()" class="equal">=</button>
+<button onclick="clearDisplay()" class="clear">C</button>
 <button onclick="insert('+')">+</button>
-<button onclick="insert('Math.sin(')">sin</button>
 
+<!-- Scientific functions -->
+<button onclick="insert('Math.sin(')">sin</button>
 <button onclick="insert('Math.cos(')">cos</button>
 <button onclick="insert('Math.tan(')">tan</button>
-<button onclick="insert('Math.log(')">log</button>
-<button onclick="insert('(')">(</button>
-<button onclick="insert(')')">)</button>
+<button onclick="insert('1/Math.cos(')">sec</button>
+<button onclick="insert('1/Math.sin(')">cosec</button>
 
-<button class="graph" onclick="toggleGraph()">Graph</button>
-<button class="theme" onclick="toggleTheme()">Theme</button>
+<button onclick="insert('1/Math.tan(')">cot</button>
+<button onclick="insert('Math.log10(')">log</button>
+<button onclick="insert('Math.log(')">ln</button>
+<button onclick="insert('Math.sqrt(')">√</button>
+<button onclick="factorial()">n!</button>
+
+<!-- Extra options -->
+<button class="graphBtn" onclick="toggleGraph()">Graph</button>
+<button class="currencyBtn" onclick="toggleCurrency()">Currency</button>
+<button class="themeBtn" onclick="toggleTheme()">Theme</button>
 
 </div>
 
-<div class="history">
-<b>History</b>
-<div id="history"></div>
-</div>
-
-<div id="graphPanel">
+<!-- Graph Panel -->
+<div id="graphBox">
 <canvas id="chart"></canvas>
-<button onclick="closeGraph()" style="margin-top:5px;width:100%">Close Graph</button>
+<button onclick="closeGraph()">Close Graph</button>
+</div>
+
+<!-- Currency Converter -->
+<div id="currencyBox">
+<select id="fromCurrency"></select>
+<select id="toCurrency"></select>
+<input id="amount" type="number" placeholder="Amount">
+<button onclick="convertCurrency()">Convert</button>
+<div id="result"></div>
+<button onclick="closeCurrency()">Close Currency</button>
 </div>
 
 </div>
 
 <script>
+// Clock
+function updateClock(){
+  document.getElementById('clock').innerText=new Date().toLocaleTimeString();
+}
+setInterval(updateClock,1000);
 
+// Calculator
 let display=document.getElementById("display")
-let historyBox=document.getElementById("history")
+let chart;
 
-function insert(v){
-display.value+=v
-}
-
-function clearDisplay(){
-display.value=""
-}
+function insert(v){display.value+=v}
+function clearDisplay(){display.value=""}
 
 function calculate(){
-
-try{
-
-let exp=display.value
-let result=eval(exp)
-
-display.value=result
-
-saveHistory(exp+" = "+result)
-
-}catch{
-display.value="Error"
+  try{
+    let exp=display.value;
+    let result=eval(exp);
+    display.value=result;
+  }catch{display.value="Error";}
 }
 
+// Factorial
+function factorial(){
+  let n=parseInt(display.value); if(n<0){display.value="Error";return;}
+  let f=1; for(let i=1;i<=n;i++){f*=i;}
+  display.value=f;
 }
 
-function saveHistory(text){
-
-let history=JSON.parse(localStorage.getItem("calcHistory"))||[]
-
-history.push(text)
-
-localStorage.setItem("calcHistory",JSON.stringify(history))
-
-loadHistory()
-
-}
-
-function loadHistory(){
-
-let history=JSON.parse(localStorage.getItem("calcHistory"))||[]
-
-historyBox.innerHTML=history.join("<br>")
-
-}
-
-loadHistory()
-
-function updateClock(){
-let now=new Date()
-document.getElementById("clock").innerText=now.toLocaleTimeString()
-}
-
-setInterval(updateClock,1000)
-
+// Theme
 function toggleTheme(){
-document.body.classList.toggle("light")
+  document.body.classList.toggle('dark');
+  document.body.classList.toggle('light');
 }
 
+// Graph
 function toggleGraph(){
-
-let panel=document.getElementById("graphPanel")
-
-panel.style.display="block"
-
-drawGraph()
-
+  let g=document.getElementById("graphBox");
+  if(g.style.display==="block"){g.style.display="none";}else{g.style.display="block"; drawGraph();}
 }
-
-function closeGraph(){
-document.getElementById("graphPanel").style.display="none"
-}
-
+function closeGraph(){document.getElementById("graphBox").style.display="none";}
 function drawGraph(){
-
-let exp=display.value
-
-let x=[]
-let y=[]
-
-for(let i=-10;i<=10;i++){
-
-x.push(i)
-
-try{
-y.push(eval(exp.replace(/x/g,i)))
-}catch{
-y.push(null)
+  let exp=display.value;
+  if(!exp.includes("x")){alert("Enter function with x"); return;}
+  let x=[], y=[];
+  for(let i=-10;i<=10;i+=0.1){
+    x.push(i);
+    try{y.push(eval(exp.replace(/x/g,"("+i+")")));}catch{y.push(null);}
+  }
+  if(chart) chart.destroy();
+  chart=new Chart(document.getElementById("chart"),{
+    type:'line',
+    data:{labels:x,datasets:[{label:'Graph',data:y,borderWidth:2}]},
+    options:{plugins:{zoom:{zoom:{wheel:{enabled:true},pinch:{enabled:true},mode:'xy'},pan:{enabled:true,mode:'xy'}}}}
+  });
 }
 
+// Currency
+const currencies=['USD','EUR','GBP','INR','JPY','CNY','AUD','CAD','CHF','SGD','NZD','MXN','BRL','ZAR','RUB','KRW'];
+const fromC=document.getElementById('fromCurrency');
+const toC=document.getElementById('toCurrency');
+currencies.forEach(c=>{fromC.innerHTML+=`<option>${c}</option>`;toC.innerHTML+=`<option>${c}</option>`;});
+function toggleCurrency(){document.getElementById("currencyBox").style.display='block';}
+function closeCurrency(){document.getElementById("currencyBox").style.display='none';}
+function convertCurrency(){
+  let from=fromC.value,to=toC.value,amt=parseFloat(document.getElementById("amount").value);
+  if(isNaN(amt)){alert("Enter amount"); return;}
+  // For simplicity we use static conversion rates. In real app, use API.
+  const rates={'USD':1,'EUR':0.91,'GBP':0.82,'INR':82,'JPY':146,'CNY':6.9,'AUD':1.5,'CAD':1.36,'CHF':0.92,'SGD':1.35,'NZD':1.62,'MXN':17.5,'BRL':5.1,'ZAR':19.1,'RUB':78,'KRW':1310};
+  let result=amt/rates[from]*rates[to];
+  document.getElementById("result").innerText=`${amt} ${from} = ${result.toFixed(2)} ${to}`;
 }
-
-new Chart(document.getElementById("chart"),{
-type:"line",
-data:{
-labels:x,
-datasets:[{
-label:"Graph",
-data:y
-}]
-}
-})
-
-}
-
 </script>
 
 </body>
